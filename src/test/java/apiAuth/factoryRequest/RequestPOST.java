@@ -1,17 +1,18 @@
-package api.factoryRequest;
+package apiAuth.factoryRequest;
 
 import io.restassured.response.Response;
 
 import static io.restassured.RestAssured.given;
 
-public class RequestGET implements IRequest{
+public class RequestPOST implements IRequest{
     @Override
     public Response send(RequestInfo request) {
         Response r = given()
                 .headers(request.getHeaders())
+                .body(request.getBody())
                 .log().all()
                 .when()
-                .get(request.getHost());
+                .post(request.getHost());
         r.then().log().all();
         return r;
 

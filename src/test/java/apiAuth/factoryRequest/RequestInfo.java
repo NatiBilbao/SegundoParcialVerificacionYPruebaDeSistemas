@@ -1,4 +1,4 @@
-package api.factoryRequest;
+package apiAuth.factoryRequest;
 
 import java.util.HashMap;
 import java.util.Map;

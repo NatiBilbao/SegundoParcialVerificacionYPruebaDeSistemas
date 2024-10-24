@@ -1,4 +1,4 @@
-package api.utils;
+package apiAuth.utils;
 
 import org.json.JSONObject;
 

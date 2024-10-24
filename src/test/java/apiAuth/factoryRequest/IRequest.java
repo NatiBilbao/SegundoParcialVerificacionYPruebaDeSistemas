@@ -1,4 +1,4 @@
-package api.factoryRequest;
+package apiAuth.factoryRequest;
 
 import io.restassured.response.Response;
 

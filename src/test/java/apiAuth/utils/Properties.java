@@ -1,4 +1,4 @@
-package api.utils;
+package apiAuth.utils;
 
 public class Properties {
     public static String host = "https://todo.ly/";

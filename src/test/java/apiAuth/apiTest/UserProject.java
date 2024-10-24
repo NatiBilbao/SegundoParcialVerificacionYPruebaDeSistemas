@@ -1,8 +1,8 @@
-package api.apiTest;
+package apiAuth.apiTest;
 
-import api.factoryRequest.FactoryRequest;
-import api.factoryRequest.RequestInfo;
-import api.utils.Properties;
+import apiAuth.factoryRequest.FactoryRequest;
+import apiAuth.factoryRequest.RequestInfo;
+import apiAuth.utils.Properties;
 import io.restassured.response.Response;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +17,6 @@ import static org.hamcrest.Matchers.equalTo;
 public class UserProject {
     RequestInfo requestInfo = new RequestInfo();
     Response response;
-
     String auth;
     JSONObject projectBody = new JSONObject();
     JSONObject userBody = new JSONObject();
@@ -25,14 +24,14 @@ public class UserProject {
     @BeforeEach
     public void setup(){
         userBody.put("FullName", "Natalia");
-        userBody.put("Email", "bilbaonatalia" + LocalTime.now().format(DateTimeFormatter.ofPattern("HHmmss")) + "190997@gmail.com");
+        userBody.put("Email", "nataliabilbao" + LocalTime.now().format(DateTimeFormatter.ofPattern("HHmmss")) + "190997@gmail.com");
         userBody.put("Password", "12345");
         projectBody.put("Content", "Natalia Project" + LocalTime.now().format(DateTimeFormatter.ofPattern("HHmmss")));
     }
 
     @Test
     public void verifyUserProjectTest(){
-        requestInfo.setHost(Properties.host + "api/user.json").setBody(userBody.toString());
+        requestInfo.setHost(Properties.host + "apiAuth/user.json").setBody(userBody.toString());
         response = FactoryRequest.make("post").send(requestInfo);
         response.then().log().all().statusCode(200)
                 .body("Email", equalTo(userBody.get("Email")))
@@ -40,10 +39,20 @@ public class UserProject {
 
         auth = Base64.getEncoder().encodeToString((userBody.get("Email") + ":" + userBody.get("Password")).getBytes());
 
-        requestInfo.setHost(Properties.host + "api/user.json").setBody(projectBody.toString()).setHeader("Authorization", "Basic" + auth);
+        requestInfo.setHost(Properties.host + "apiAuth/user.json").setBody(projectBody.toString()).setHeader("Authorization", "Basic" + auth);
         response = FactoryRequest.make("post").send(requestInfo);
         response.then().log().all().statusCode(200)
                 .body("Content", equalTo(projectBody.get("Content")));
 
+        requestInfo.setHost(Properties.host + "apiAuth/user.json").setBody(projectBody.toString()).setHeader("Authorization", "Basic" + auth);
+        response = FactoryRequest.make("delete").send(requestInfo);
+        response.then().log().all().statusCode(200)
+                .body("Email", equalTo(userBody.get("Email")))
+                .body("FullName", equalTo(userBody.get("FullName")));
+
+        requestInfo.setHost(Properties.host + "apiAuth/user.json").setBody(projectBody.toString()).setHeader("Authorization", "Basic" + auth);
+        response = FactoryRequest.make("post").send(requestInfo);
+        response.then().log().all().statusCode(200)
+                .body("ErrorMesage", equalTo("Account doesn't exist"));
     }
 }
